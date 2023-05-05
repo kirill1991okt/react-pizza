@@ -1,6 +1,8 @@
 @import '../variables';
 
 .categories {
+  width: 100%;
+  overflow: auto;
   ul {
     display: flex;
 
