@@ -10,10 +10,6 @@ function Categories({ categoryId, setCategoryId }) {
     'Закрытые',
   ];
 
-  const onClick = (index) => {
-    setCategoryId(index);
-  };
-
   return (
     <div className='categories'>
       <ul>
@@ -21,7 +17,7 @@ function Categories({ categoryId, setCategoryId }) {
           return (
             <li
               key={category}
-              onClick={() => onClick(i)}
+              onClick={() => setCategoryId(i)}
               className={categoryId === i ? 'active' : null}
             >
               {category}
