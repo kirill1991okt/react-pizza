@@ -1,17 +1,15 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { setCategory, setCurrentPage } from '../redux/slices/filterSlice';
-import axios from 'axios';
-import qs from 'qs';
 import {
-  useNavigate,
-  useSearchParams,
-  useLocation,
-  useParams,
-} from 'react-router-dom';
+  setCategory,
+  setCurrentPage,
+  setFilters,
+} from '../redux/slices/filterSlice';
+import axios from 'axios';
+import { useSearchParams } from 'react-router-dom';
 
 import Categories from '../components/Categories';
-import Sort from '../components/Sort';
+import Sort, { sortList } from '../components/Sort';
 import PizzaBlock from '../components/PizzaBlock';
 import PizzaSkeleton from '../components/PizzaSkeleton';
 import Pagination from '../components/Pagination';
@@ -20,12 +18,12 @@ const Home = ({ valueSearch }) => {
   const dispatch = useDispatch();
   const { category, currentPage } = useSelector((state) => state.filter);
   const sortType = useSelector((state) => state.filter.sort.sortProperty);
+  const isSearch = React.useRef(false);
+  const isMounted = React.useRef(false);
 
   const [items, setItems] = React.useState([]);
   const [isLoading, setIsLoading] = React.useState(true);
-  const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
-  const { param } = useParams();
 
   const onChangeCategory = (id) => {
     dispatch(setCategory(id));
@@ -35,15 +33,12 @@ const Home = ({ valueSearch }) => {
     dispatch(setCurrentPage(number));
   };
 
-  const search = valueSearch ? `search=${valueSearch}` : '';
-  const categoryParams = category > 0 ? `category=${category}` : '';
+  const fetchPizzas = () => {
+    setIsLoading(true);
 
-  console.log(useLocation());
+    const search = valueSearch ? `search=${valueSearch}` : '';
+    const categoryParams = category > 0 ? `category=${category}` : '';
 
-  React.useEffect(() => {}, []);
-
-  //* Правильная сортировка в 9 уроке.
-  React.useEffect(() => {
     axios
       .get(
         `https://64528bf5bce0b0a0f749efb6.mockapi.io/items?page=${currentPage}&limit=4&${search}&${categoryParams}&sortBy=${sortType}`
@@ -51,29 +46,42 @@ const Home = ({ valueSearch }) => {
       .then((res) => {
         setItems(res.data);
         setIsLoading(false);
-        window.scrollTo(0, 0);
+        window.scrollTo(0, 150);
       });
-  }, [valueSearch, currentPage, category, sortType]);
+  };
+
+  console.log(isMounted.current);
 
   React.useEffect(() => {
-    // const queryString = qs.stringify(
-    //   {
-    //     page: currentPage,
-    //     category,
-    //     sortBy: sortType,
-    //     limit: 4,
-    //   },
-    //   { addQueryPrefix: true }
-    // );
+    const params = {};
+    if (window.location.search) {
+      searchParams.forEach((value, key) => (params[key] = value));
 
-    setSearchParams({
-      page: currentPage,
-      category,
-      sortBy: sortType,
-      limit: 4,
-    });
-    // navigate(queryString);
+      const sort = sortList.find((obj) => obj.sortProperty === params.sortBy);
+
+      dispatch(setFilters({ ...params, sort }));
+      isSearch.current = true;
+    }
+  }, []);
+
+  React.useEffect(() => {
+    if (isMounted.current) {
+      setSearchParams({
+        page: currentPage,
+        category,
+        sortBy: sortType,
+      });
+    }
+    isMounted.current = true;
   }, [currentPage, category, sortType]);
+
+  React.useEffect(() => {
+    if (!isSearch.current) {
+      fetchPizzas();
+    }
+
+    isSearch.current = false;
+  }, [valueSearch, currentPage, category, sortType]);
 
   const skeletons = [...new Array(6)].map((_, i) => <PizzaSkeleton key={i} />);
   const pizzas = items.map((pizza) => <PizzaBlock key={pizza.id} {...pizza} />);
