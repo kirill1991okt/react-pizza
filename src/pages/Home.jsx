@@ -45,16 +45,15 @@ const Home = ({ valueSearch }) => {
       )
       .then((res) => {
         setItems(res.data);
+        console.log(res.data);
         setIsLoading(false);
         window.scrollTo(0, 150);
       });
   };
 
-  console.log(isMounted.current);
-
   React.useEffect(() => {
-    const params = {};
     if (window.location.search) {
+      const params = {};
       searchParams.forEach((value, key) => (params[key] = value));
 
       const sort = sortList.find((obj) => obj.sortProperty === params.sortBy);
@@ -78,12 +77,13 @@ const Home = ({ valueSearch }) => {
   React.useEffect(() => {
     if (!isSearch.current) {
       fetchPizzas();
+      console.log(sortType);
     }
 
     isSearch.current = false;
   }, [valueSearch, currentPage, category, sortType]);
 
-  const skeletons = [...new Array(6)].map((_, i) => <PizzaSkeleton key={i} />);
+  const skeletons = [...new Array(4)].map((_, i) => <PizzaSkeleton key={i} />);
   const pizzas = items.map((pizza) => <PizzaBlock key={pizza.id} {...pizza} />);
   return (
     <>

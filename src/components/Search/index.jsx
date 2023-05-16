@@ -21,8 +21,6 @@ const Search = () => {
 
   const debouncedOnChange = React.useCallback(debounce(onChangeInput, 250), []);
 
-  console.log('render');
-
   return (
     <div className={styles.root}>
       <input

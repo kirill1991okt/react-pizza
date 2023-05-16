@@ -1,6 +1,12 @@
 import React from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { addItem } from '../redux/slices/cartSlice';
 
-function PizzaBlock({ title, imageUrl, price, types, sizes }) {
+function PizzaBlock({ id, title, imageUrl, price, types, sizes }) {
+  const dispatch = useDispatch();
+  const currentPizza = useSelector((state) =>
+    state.cart.items.find((obj) => obj.id === id)
+  );
   const [activeIndexType, setActiveIndexType] = React.useState(0);
   const [activeIndexSize, setActiveIndexSize] = React.useState(0);
 
@@ -10,6 +16,19 @@ function PizzaBlock({ title, imageUrl, price, types, sizes }) {
 
   const onClickSize = (index) => {
     setActiveIndexSize(index);
+  };
+
+  const onClickAddItem = () => {
+    console.log(sizes[activeIndexSize]);
+    const obj = {
+      id,
+      title,
+      imageUrl,
+      price,
+      types: pizzaTypes[activeIndexType],
+      sizes: sizes[activeIndexSize],
+    };
+    dispatch(addItem(obj));
   };
 
   const pizzaTypes = ['тонкое', 'традиционное'];
@@ -44,7 +63,10 @@ function PizzaBlock({ title, imageUrl, price, types, sizes }) {
       </div>
       <div className='pizza-block__bottom'>
         <div className='pizza-block__price'>от {price} ₽</div>
-        <div className='button button--outline button--add'>
+        <div
+          onClick={onClickAddItem}
+          className='button button--outline button--add'
+        >
           <svg
             width='12'
             height='12'
@@ -58,7 +80,7 @@ function PizzaBlock({ title, imageUrl, price, types, sizes }) {
             />
           </svg>
           <span>Добавить</span>
-          <i>2</i>
+          {currentPizza && <i>{currentPizza.count}</i>}
         </div>
       </div>
     </div>
