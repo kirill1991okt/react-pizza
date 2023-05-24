@@ -3,7 +3,6 @@ import React from 'react';
 import style from './notFoundBlock.module.scss';
 
 const NotFoundBlock = () => {
-  console.log(style);
   return (
     <div className={style.root}>
       <span>😕</span>

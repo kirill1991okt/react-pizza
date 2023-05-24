@@ -31,6 +31,16 @@ body {
     @media (max-width: 730px) {
       justify-content: center;
     }
+
+    &-error {
+      width: 100%;
+      margin: 40px 0;
+      text-align: center;
+
+      span {
+        font-size: 44px;
+      }
+    }
   }
 
   &__top {
