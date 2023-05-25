@@ -1,12 +1,14 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import {
+  selectFilter,
+  selectFilterSortProperty,
   setCategory,
   setCurrentPage,
   setFilters,
 } from '../redux/slices/filterSlice';
-import { fetchItems } from '../redux/slices/pizzaSlice';
-import { useSearchParams } from 'react-router-dom';
+import { fetchItems, selectPizza } from '../redux/slices/pizzaSlice';
+import { useSearchParams, useLocation } from 'react-router-dom';
 
 import Categories from '../components/Categories';
 import Sort, { sortList } from '../components/Sort';
@@ -14,11 +16,14 @@ import PizzaBlock from '../components/PizzaBlock';
 import PizzaSkeleton from '../components/PizzaSkeleton';
 import Pagination from '../components/Pagination';
 
-const Home = ({ valueSearch }) => {
+const Home = () => {
+  const location = useLocation();
+  console.log(location);
+
   const dispatch = useDispatch();
-  const { category, currentPage } = useSelector((state) => state.filter);
-  const sortType = useSelector((state) => state.filter.sort.sortProperty);
-  const { items, loading } = useSelector((state) => state.pizza);
+  const { category, currentPage, searchValue } = useSelector(selectFilter);
+  const sortType = useSelector(selectFilterSortProperty);
+  const { items, loading } = useSelector(selectPizza);
   const isSearch = React.useRef(false);
   const isMounted = React.useRef(false);
 
@@ -33,7 +38,7 @@ const Home = ({ valueSearch }) => {
   };
 
   const fetchPizzas = () => {
-    const search = valueSearch ? `search=${valueSearch}` : '';
+    const search = searchValue ? `search=${searchValue}` : '';
     const categoryParams = category > 0 ? `category=${category}` : '';
 
     dispatch(fetchItems({ currentPage, search, categoryParams, sortType }));
@@ -42,7 +47,7 @@ const Home = ({ valueSearch }) => {
   };
 
   React.useEffect(() => {
-    if (window.location.search) {
+    if (location.search) {
       const params = {};
       searchParams.forEach((value, key) => (params[key] = value));
 
@@ -70,7 +75,7 @@ const Home = ({ valueSearch }) => {
     }
 
     isSearch.current = false;
-  }, [valueSearch, currentPage, category, sortType]);
+  }, [searchValue, currentPage, category, sortType]);
 
   const skeletons = [...new Array(4)].map((_, i) => <PizzaSkeleton key={i} />);
   const pizzas = items.map((pizza) => <PizzaBlock key={pizza.id} {...pizza} />);
