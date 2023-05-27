@@ -1,20 +1,34 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { addItem } from '../redux/slices/cartSlice';
+import { addItem, selectCartById } from '../redux/slices/cartSlice';
 
-function PizzaBlock({ id, title, imageUrl, price, types, sizes }) {
+type PizzaBlockProps = {
+  id: number;
+  title: string;
+  imageUrl: string;
+  price: number;
+  types: number[];
+  sizes: number[];
+};
+
+const PizzaBlock: React.FC<PizzaBlockProps> = ({
+  id,
+  title,
+  imageUrl,
+  price,
+  types,
+  sizes,
+}) => {
   const dispatch = useDispatch();
-  const currentPizza = useSelector((state) =>
-    state.cart.items.find((obj) => obj.id === id)
-  );
+  const currentPizza = useSelector(selectCartById(id));
   const [activeIndexType, setActiveIndexType] = React.useState(0);
   const [activeIndexSize, setActiveIndexSize] = React.useState(0);
 
-  const onClickType = (index) => {
+  const onClickType = (index: number) => {
     setActiveIndexType(index);
   };
 
-  const onClickSize = (index) => {
+  const onClickSize = (index: number) => {
     setActiveIndexSize(index);
   };
 
@@ -42,7 +56,7 @@ function PizzaBlock({ id, title, imageUrl, price, types, sizes }) {
           {types.map((type) => (
             <li
               key={type}
-              className={activeIndexType === type ? 'active' : null}
+              className={activeIndexType === type ? 'active' : ''}
               onClick={() => onClickType(type)}
             >
               {pizzaTypes[type]}
@@ -53,7 +67,7 @@ function PizzaBlock({ id, title, imageUrl, price, types, sizes }) {
           {sizes.map((size, i) => (
             <li
               key={size}
-              className={activeIndexSize === i ? 'active' : null}
+              className={activeIndexSize === i ? 'active' : ''}
               onClick={() => onClickSize(i)}
             >
               {size} см.
@@ -85,6 +99,6 @@ function PizzaBlock({ id, title, imageUrl, price, types, sizes }) {
       </div>
     </div>
   );
-}
+};
 
 export default PizzaBlock;

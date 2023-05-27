@@ -7,8 +7,12 @@ import Search from './Search';
 import pizzaLogo from '../assets/img/pizza-logo.svg';
 import { selectCart } from '../redux/slices/cartSlice';
 
-function Header() {
+const Header: React.FC = () => {
   const { totalPrice, items } = useSelector(selectCart);
+
+  const totalCount: number = items.reduce((sum: number, obj: any) => {
+    return sum + obj.count;
+  }, 0);
 
   return (
     <div className='header'>
@@ -56,16 +60,12 @@ function Header() {
                 strokeLinejoin='round'
               />
             </svg>
-            <span>
-              {items.reduce((sum, obj) => {
-                return sum + obj.count;
-              }, 0)}
-            </span>
+            <span>{totalCount}</span>
           </Link>
         </div>
       </div>
     </div>
   );
-}
+};
 
 export default Header;

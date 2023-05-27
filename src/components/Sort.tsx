@@ -1,23 +1,33 @@
 import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { setSort } from '../redux/slices/filterSlice';
+import { selectSort, setSort } from '../redux/slices/filterSlice';
 
-export const sortList = [
+type SortListType = {
+  name: string;
+  sortProperty: string;
+};
+
+export const sortList: SortListType[] = [
   { name: 'популярности', sortProperty: 'rating' },
   { name: 'цене', sortProperty: 'price' },
   { name: 'алфавиту', sortProperty: 'title' },
 ];
 
-function Sort() {
+const Sort: React.FC = () => {
   const dispatch = useDispatch();
-  const sort = useSelector((state) => state.filter.sort);
+  const sort = useSelector(selectSort);
 
   const [isVisible, setIsVisible] = React.useState(false);
 
-  const sortRef = React.useRef();
+  const sortRef = React.useRef<HTMLDivElement>(null);
+
+  const onClickItem = (obj: SortListType) => {
+    dispatch(setSort(obj));
+    setIsVisible(!isVisible);
+  };
 
   useEffect(() => {
-    const handelClick = (e) => {
+    const handelClick = (e: any) => {
       if (!e.composedPath().includes(sortRef.current)) {
         setIsVisible(false);
       }
@@ -51,11 +61,8 @@ function Sort() {
             {sortList.map((obj, i) => (
               <li
                 key={obj.name}
-                onClick={() => {
-                  dispatch(setSort(obj));
-                  setIsVisible(!isVisible);
-                }}
-                className={sort.name === obj.name ? 'active' : null}
+                onClick={() => onClickItem(obj)}
+                className={sort.name === obj.name ? 'active' : ''}
               >
                 {obj.name}
               </li>
@@ -65,6 +72,6 @@ function Sort() {
       )}
     </div>
   );
-}
+};
 
 export default Sort;

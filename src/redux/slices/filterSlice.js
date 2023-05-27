@@ -38,6 +38,8 @@ export const selectFilter = (state) => state.filter;
 export const selectFilterSortProperty = (state) =>
   state.filter.sort.sortProperty;
 
+export const selectSort = (state) => state.filter.sort;
+
 export const {
   setCategory,
   setSort,

@@ -16,10 +16,12 @@ import PizzaBlock from '../components/PizzaBlock';
 import PizzaSkeleton from '../components/PizzaSkeleton';
 import Pagination from '../components/Pagination';
 
-const Home = () => {
-  const location = useLocation();
-  console.log(location);
+interface IParamsKeys {
+  [key: string]: string | number;
+}
 
+const Home: React.FC = () => {
+  const location = useLocation();
   const dispatch = useDispatch();
   const { category, currentPage, searchValue } = useSelector(selectFilter);
   const sortType = useSelector(selectFilterSortProperty);
@@ -29,26 +31,29 @@ const Home = () => {
 
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const onChangeCategory = (id) => {
+  const onChangeCategory = (id: number) => {
     dispatch(setCategory(id));
   };
 
-  const onChangeCurrentPage = (number) => {
-    dispatch(setCurrentPage(number));
+  const onChangeCurrentPage = (page: number) => {
+    dispatch(setCurrentPage(page));
   };
 
   const fetchPizzas = () => {
     const search = searchValue ? `search=${searchValue}` : '';
     const categoryParams = category > 0 ? `category=${category}` : '';
 
-    dispatch(fetchItems({ currentPage, search, categoryParams, sortType }));
+    dispatch(
+      //@ts-ignore
+      fetchItems({ currentPage, search, categoryParams, sortType })
+    );
 
     window.scrollTo(0, 150);
   };
 
   React.useEffect(() => {
     if (location.search) {
-      const params = {};
+      const params: IParamsKeys = {};
       searchParams.forEach((value, key) => (params[key] = value));
 
       const sort = sortList.find((obj) => obj.sortProperty === params.sortBy);
@@ -78,7 +83,9 @@ const Home = () => {
   }, [searchValue, currentPage, category, sortType]);
 
   const skeletons = [...new Array(4)].map((_, i) => <PizzaSkeleton key={i} />);
-  const pizzas = items.map((pizza) => <PizzaBlock key={pizza.id} {...pizza} />);
+  const pizzas = items.map((pizza: any) => (
+    <PizzaBlock key={pizza.id} {...pizza} />
+  ));
   return (
     <>
       <div className='content__top'>
