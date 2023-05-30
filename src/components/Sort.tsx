@@ -27,8 +27,8 @@ const Sort: React.FC = () => {
   };
 
   useEffect(() => {
-    const handelClick = (e: any) => {
-      if (!e.composedPath().includes(sortRef.current)) {
+    const handelClick = (e: MouseEvent) => {
+      if (sortRef.current && !e.composedPath().includes(sortRef.current)) {
         setIsVisible(false);
       }
     };
