@@ -1,16 +1,16 @@
 import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { selectSort, setSort } from '../redux/slices/filterSlice';
+import { selectSort, setSort, SortProperty } from '../redux/slices/filterSlice';
 
-type SortListType = {
+export type SortListType = {
   name: string;
-  sortProperty: string;
+  sortProperty: SortProperty;
 };
 
 export const sortList: SortListType[] = [
-  { name: 'популярности', sortProperty: 'rating' },
-  { name: 'цене', sortProperty: 'price' },
-  { name: 'алфавиту', sortProperty: 'title' },
+  { name: 'популярности', sortProperty: SortProperty.RATING },
+  { name: 'цене', sortProperty: SortProperty.PRICE },
+  { name: 'алфавиту', sortProperty: SortProperty.TITLE },
 ];
 
 const Sort: React.FC = () => {
@@ -27,8 +27,8 @@ const Sort: React.FC = () => {
   };
 
   useEffect(() => {
-    const handelClick = (e: MouseEvent) => {
-      if (sortRef.current && !e.composedPath().includes(sortRef.current)) {
+    const handelClick = (e: any) => {
+      if (!e.composedPath().includes(sortRef.current)) {
         setIsVisible(false);
       }
     };

@@ -1,6 +1,7 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import {
+  ISort,
   selectFilter,
   selectFilterSortProperty,
   setCategory,
@@ -15,6 +16,7 @@ import Sort, { sortList } from '../components/Sort';
 import PizzaBlock from '../components/PizzaBlock';
 import PizzaSkeleton from '../components/PizzaSkeleton';
 import Pagination from '../components/Pagination';
+import { useAppDispatch } from '../redux/store';
 
 interface IParamsKeys {
   [key: string]: string | number;
@@ -22,14 +24,15 @@ interface IParamsKeys {
 
 const Home: React.FC = () => {
   const location = useLocation();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const { category, currentPage, searchValue } = useSelector(selectFilter);
   const sortType = useSelector(selectFilterSortProperty);
   const { items, loading } = useSelector(selectPizza);
   const isSearch = React.useRef(false);
   const isMounted = React.useRef(false);
 
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams, setSearchParams]: [URLSearchParams, Function] =
+    useSearchParams();
 
   const onChangeCategory = (id: number) => {
     dispatch(setCategory(id));
@@ -43,10 +46,7 @@ const Home: React.FC = () => {
     const search = searchValue ? `search=${searchValue}` : '';
     const categoryParams = category > 0 ? `category=${category}` : '';
 
-    dispatch(
-      //@ts-ignore
-      fetchItems({ currentPage, search, categoryParams, sortType })
-    );
+    dispatch(fetchItems({ currentPage, search, categoryParams, sortType }));
 
     window.scrollTo(0, 150);
   };
@@ -56,9 +56,19 @@ const Home: React.FC = () => {
       const params: IParamsKeys = {};
       searchParams.forEach((value, key) => (params[key] = value));
 
-      const sort = sortList.find((obj) => obj.sortProperty === params.sortBy);
+      const sort = sortList.find(
+        (obj) => obj.sortProperty === params.sortBy
+      ) as ISort;
 
-      dispatch(setFilters({ ...params, sort }));
+      console.log(params);
+      dispatch(
+        setFilters({
+          category: +params.category,
+          currentPage: +params.currentPage,
+          searchValue: searchValue,
+          sort: sort || sortList[0],
+        })
+      );
       isSearch.current = true;
     }
   }, []);
@@ -66,7 +76,7 @@ const Home: React.FC = () => {
   React.useEffect(() => {
     if (isMounted.current) {
       setSearchParams({
-        page: currentPage,
+        currentPage,
         category,
         sortBy: sortType,
       });

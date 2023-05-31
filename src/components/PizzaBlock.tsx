@@ -1,8 +1,8 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { addItem, selectCartById } from '../redux/slices/cartSlice';
+import { ItemsType, addItem, selectCartById } from '../redux/slices/cartSlice';
 
-type PizzaBlockProps = {
+export type PizzaBlockProps = {
   id: number;
   title: string;
   imageUrl: string;
@@ -33,14 +33,14 @@ const PizzaBlock: React.FC<PizzaBlockProps> = ({
   };
 
   const onClickAddItem = () => {
-    console.log(sizes[activeIndexSize]);
-    const obj = {
+    const obj: ItemsType = {
       id,
       title,
       imageUrl,
       price,
       types: pizzaTypes[activeIndexType],
       sizes: sizes[activeIndexSize],
+      count: 0,
     };
     dispatch(addItem(obj));
   };
