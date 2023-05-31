@@ -68,24 +68,6 @@
       }
     }
 
-    &:disabled {
-      background-color: #fff;
-      border-color: gray;
-      &,
-      span {
-        color: gray;
-      }
-
-      svg {
-        path {
-          fill: gray;
-        }
-      }
-
-      pointer-events: none;
-      cursor: pointer;
-    }
-
     &:hover {
       background-color: $orange;
 
