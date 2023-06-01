@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
 import Search from './Search';
@@ -9,6 +9,9 @@ import { selectCart } from '../redux/slices/cartSlice';
 
 const Header: React.FC = () => {
   const { totalPrice, items } = useSelector(selectCart);
+  const location = useLocation();
+
+  console.log(location);
 
   const totalCount: number = items.reduce((sum: number, obj: any) => {
     return sum + obj.count;
@@ -26,7 +29,7 @@ const Header: React.FC = () => {
             </div>
           </div>
         </Link>
-        <Search />
+        {location.pathname === '/' && <Search />}
         <div className='header__cart'>
           <Link to='/cart' className='button button--cart'>
             <span>{totalPrice}&nbsp;₽</span>

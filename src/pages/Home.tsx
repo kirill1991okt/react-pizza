@@ -34,9 +34,9 @@ const Home: React.FC = () => {
   const [searchParams, setSearchParams]: [URLSearchParams, Function] =
     useSearchParams();
 
-  const onChangeCategory = (id: number) => {
+  const onChangeCategory = React.useCallback((id: number) => {
     dispatch(setCategory(id));
-  };
+  }, []);
 
   const onChangeCurrentPage = (page: number) => {
     dispatch(setCurrentPage(page));
@@ -48,7 +48,7 @@ const Home: React.FC = () => {
 
     dispatch(fetchItems({ currentPage, search, categoryParams, sortType }));
 
-    window.scrollTo(0, 150);
+    // window.scrollTo(0, 150);
   };
 
   React.useEffect(() => {

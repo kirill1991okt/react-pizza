@@ -13,7 +13,7 @@ export const sortList: SortListType[] = [
   { name: 'алфавиту', sortProperty: SortProperty.TITLE },
 ];
 
-const Sort: React.FC = () => {
+const Sort: React.FC = React.memo(() => {
   const dispatch = useDispatch();
   const sort = useSelector(selectSort);
 
@@ -72,6 +72,6 @@ const Sort: React.FC = () => {
       )}
     </div>
   );
-};
+});
 
 export default Sort;
