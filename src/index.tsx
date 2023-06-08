@@ -13,7 +13,7 @@ const root = ReactDOM.createRoot(
 );
 root.render(
   // <React.StrictMode>
-  <BrowserRouter>
+  <BrowserRouter basename='/react-pizza'>
     <Provider store={store}>
       <App />
     </Provider>
