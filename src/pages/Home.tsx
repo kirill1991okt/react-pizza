@@ -1,5 +1,6 @@
 import React from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
+import { useSearchParams, useLocation } from 'react-router-dom';
 import {
   ISort,
   selectFilter,
@@ -9,14 +10,13 @@ import {
   setFilters,
 } from '../redux/slices/filterSlice';
 import { fetchItems, selectPizza } from '../redux/slices/pizzaSlice';
-import { useSearchParams, useLocation } from 'react-router-dom';
+import { useAppDispatch } from '../redux/store';
 
 import Categories from '../components/Categories';
 import Sort, { sortList } from '../components/Sort';
 import PizzaBlock from '../components/PizzaBlock';
 import PizzaSkeleton from '../components/PizzaSkeleton';
 import Pagination from '../components/Pagination';
-import { useAppDispatch } from '../redux/store';
 
 interface IParamsKeys {
   [key: string]: string | number;
